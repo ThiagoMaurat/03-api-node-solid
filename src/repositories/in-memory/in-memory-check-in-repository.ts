@@ -4,7 +4,22 @@ import { randomUUID } from "crypto";
 import dayjs from "dayjs";
 
 export class InMemoryCheckInsRepository implements CheckInsRepository {
+  async countByUserId(userId: string): Promise<number> {
+    const items = await this.items.filter(
+      (checkIn) => checkIn.user_id === userId
+    ).length;
+
+    return items;
+  }
   public items: CheckIn[] = [];
+
+  async findManyByUserId(userId: string, page: number): Promise<CheckIn[]> {
+    const items = await this.items
+      .filter((checkIn) => checkIn.user_id === userId)
+      .slice((page - 1) * 20, page * 20);
+
+    return items;
+  }
 
   async findUserIdOnDate(userId: string, date: Date): Promise<CheckIn | null> {
     const startOfTheDay = dayjs(date).startOf("day");
