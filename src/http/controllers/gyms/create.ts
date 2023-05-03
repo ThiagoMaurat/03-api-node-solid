@@ -24,7 +24,6 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     title,
     description,
     latitude,
-
     longitude,
     phone,
   });
