@@ -1,9 +1,9 @@
-import { z } from "zod";
 import { FastifyRequest, FastifyReply } from "fastify";
+import { z } from "zod";
 import { makeCheckInUseCase } from "@/use-cases/factories/make-check-in-use-case";
 
 export async function create(request: FastifyRequest, reply: FastifyReply) {
-  const createScheckInParamsSchema = z.object({
+  const createCheckInParamsSchema = z.object({
     gymId: z.string().uuid(),
   });
 
@@ -16,17 +16,17 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     }),
   });
 
-  const { gymId } = createScheckInParamsSchema.parse(request.params);
+  const { gymId } = createCheckInParamsSchema.parse(request.params);
   const { latitude, longitude } = createCheckInBodySchema.parse(request.body);
 
-  const registerUseCase = makeCheckInUseCase();
+  const checkInUseCase = makeCheckInUseCase();
 
-  const { checkIn } = await registerUseCase.execute({
+  await checkInUseCase.execute({
     gymId,
+    userId: request.user.sub.id,
     userLatitude: latitude,
     userLongitude: longitude,
-    userId: request.user.sub.id.toString(),
   });
 
-  return reply.status(201).send({ checkIn });
+  return reply.status(201).send();
 }

@@ -13,7 +13,7 @@ export async function history(request: FastifyRequest, reply: FastifyReply) {
 
   const { checkIns } = await fetchUserCheckInsHistoryUseCase.execute({
     page,
-    userId: request.user.sub.id.toString(),
+    userId: request.user.sub.id,
   });
 
   return reply.status(201).send({ checkIns });

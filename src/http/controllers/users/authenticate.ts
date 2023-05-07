@@ -2,7 +2,6 @@ import { z } from "zod";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { InvalidCredentialsError } from "@/use-cases/errors/invalid-credentials-error";
 import { makeAuthentiateUseCase } from "@/use-cases/factories/make-authenticate-use-case";
-import fastifyCookie from "@fastify/cookie";
 
 export async function authenticate(
   request: FastifyRequest,
@@ -24,7 +23,9 @@ export async function authenticate(
     });
 
     const token = await reply.jwtSign(
-      {},
+      {
+        role: user.role,
+      },
       {
         sign: {
           sub: user.id,
